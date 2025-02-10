@@ -10,6 +10,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
+	github.com/jszwec/csvutil v1.10.0
 	github.com/marcboeker/go-duckdb v1.8.4
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/maypok86/otter v1.2.4
@@ -20,6 +21,7 @@ require (
 	github.com/samber/slog-logrus/v2 v2.5.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
+	github.com/wundergraph/astjson v0.0.0-20250106123708-be463c97e083
 	go.mongodb.org/mongo-driver v1.17.2
 	go.uber.org/fx v1.23.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

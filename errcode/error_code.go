@@ -11,11 +11,6 @@ const (
 	UnknownErrorCode = 10001
 )
 
-var (
-	ErrRequestParameter = NewCustomError(10002, "error request parameter")
-	ErrAuthCode         = NewCustomError(10003, "error auth token")
-)
-
 type CustomError struct {
 	msg  string
 	code uint32
@@ -41,7 +36,8 @@ func (e *CustomError) Wrap(errMsg string) *CustomError {
 
 func DecodeError(customErr error) uint32 {
 	rootErr := errors.Cause(customErr)
-	if ce, ok := rootErr.(*CustomError); ok {
+	var ce *CustomError
+	if errors.As(rootErr, &ce) {
 		return ce.code
 	}
 

@@ -1,7 +1,9 @@
 package repo
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -10,6 +12,23 @@ import (
 )
 
 type Duration time.Duration
+
+func (d Duration) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + time.Duration(d).String() + "\""), nil
+}
+
+func (d *Duration) UnmarshalJSON(b []byte) error {
+	// remove "
+	str := string(b)
+	str = strings.TrimPrefix(str, "\"")
+	str = strings.TrimSuffix(str, "\"")
+	x, err := time.ParseDuration(str)
+	if err != nil {
+		return err
+	}
+	*d = Duration(x)
+	return nil
+}
 
 func (d *Duration) MarshalText() (text []byte, err error) {
 	return []byte(time.Duration(*d).String()), nil
@@ -28,8 +47,31 @@ func (d *Duration) ToDuration() time.Duration {
 	return time.Duration(*d)
 }
 
-func (d *Duration) String() string {
-	return time.Duration(*d).String()
+func (d Duration) String() string {
+	return time.Duration(d).String()
+}
+
+func (d Duration) FormatToMinutes() string {
+	totalMinutes := int64(time.Duration(d).Minutes())
+	days := totalMinutes / (60 * 24)
+	hours := (totalMinutes % (60 * 24)) / 60
+	minutes := totalMinutes % 60
+
+	var result string
+	if days > 0 {
+		result += fmt.Sprintf("%dd", days)
+	}
+	if hours > 0 {
+		result += fmt.Sprintf("%dh", hours)
+	}
+	if minutes > 0 {
+		result += fmt.Sprintf("%dm", minutes)
+	}
+
+	if result == "" {
+		return "0m"
+	}
+	return result
 }
 
 func StringToTimeDurationHookFunc() mapstructure.DecodeHookFunc {
@@ -90,8 +132,8 @@ type DBInfo struct {
 	Port     uint32 `mapstructure:"port" toml:"port"`
 	User     string `mapstructure:"user" toml:"user"`
 	Password string `mapstructure:"password" toml:"password"`
-	Schema   string `mapstructure:"schema" toml:"schema"`
 	DBName   string `mapstructure:"db_name" toml:"db_name"`
+	Schema   string `mapstructure:"schema" toml:"schema"`
 	SSLMode  string `mapstructure:"ssl_mode" toml:"ssl_mode"`
 }
 
