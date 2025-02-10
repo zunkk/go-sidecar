@@ -8,11 +8,13 @@ import (
 	"runtime/debug"
 	"strings"
 	"sync"
+	"testing"
 	"time"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 
 	glog "github.com/zunkk/go-sidecar/log"
@@ -420,4 +422,29 @@ func RecoverExecute(executor func() error) (pErr error) {
 		}
 	}()
 	return executor()
+}
+
+type mockLifecycle struct {
+}
+
+func (l *mockLifecycle) Append(fx.Hook) {}
+
+type mockShutdowner struct {
+	t testing.TB
+}
+
+func (s *mockShutdowner) Shutdown(...fx.ShutdownOption) error {
+	s.t.Fatal("Shutdown called")
+	return nil
+}
+
+func NewTestSidecar(t testing.TB) *Sidecar {
+	sidecar, err := NewSidecar(&BuildConfig{
+		Ctx:       context.Background(),
+		Wg:        new(sync.WaitGroup),
+		Version:   "test",
+		NodeIndex: 0,
+	}, &mockLifecycle{}, &mockShutdowner{})
+	assert.Nil(t, err)
+	return sidecar
 }
