@@ -438,6 +438,15 @@ func (s *mockShutdowner) Shutdown(...fx.ShutdownOption) error {
 	return nil
 }
 
+func NewCmdSidecar(ctx context.Context) (*Sidecar, error) {
+	return NewSidecar(&BuildConfig{
+		Ctx:       ctx,
+		Wg:        new(sync.WaitGroup),
+		Version:   "cmd",
+		NodeIndex: 0,
+	}, &mockLifecycle{}, &mockShutdowner{})
+}
+
 func NewTestSidecar(t testing.TB) *Sidecar {
 	sidecar, err := NewSidecar(&BuildConfig{
 		Ctx:       context.Background(),
