@@ -424,8 +424,7 @@ func RecoverExecute(executor func() error) (pErr error) {
 	return executor()
 }
 
-type mockLifecycle struct {
-}
+type mockLifecycle struct{}
 
 func (l *mockLifecycle) Append(fx.Hook) {}
 

@@ -71,7 +71,7 @@ func WriteDebugInfo(repoPath string, debugInfo any) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(p, raw, 0755); err != nil {
+	if err := os.WriteFile(p, raw, 0o755); err != nil {
 		return errors.Wrap(err, "failed to write debug info file")
 	}
 	return nil
@@ -80,7 +80,7 @@ func WriteDebugInfo(repoPath string, debugInfo any) error {
 func WritePid(rootPath string) error {
 	pid := os.Getpid()
 	pidStr := strconv.Itoa(pid)
-	if err := os.WriteFile(filepath.Join(rootPath, pidFileName), []byte(pidStr), 0755); err != nil {
+	if err := os.WriteFile(filepath.Join(rootPath, pidFileName), []byte(pidStr), 0o755); err != nil {
 		return errors.Wrap(err, "failed to write pid file")
 	}
 	return nil

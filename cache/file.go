@@ -29,7 +29,7 @@ func NewFileCache[V any](repoDir string, id string) (*FileCache[V], error) {
 		return nil, errors.Errorf("cache with id %s already exists", id)
 	}
 	cacheDir := filepath.Join(repoDir, "cache")
-	if os.MkdirAll(cacheDir, 0755) != nil {
+	if os.MkdirAll(cacheDir, 0o755) != nil {
 		return nil, errors.Errorf("failed to create cache dir %s", cacheDir)
 	}
 
@@ -50,7 +50,7 @@ func (c *FileCache[V]) Put(v V) error {
 		if err != nil {
 			return err
 		}
-		if err := os.WriteFile(c.filePath(), raw, 0755); err != nil {
+		if err := os.WriteFile(c.filePath(), raw, 0o755); err != nil {
 			return err
 		}
 		return nil

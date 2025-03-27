@@ -78,8 +78,10 @@ func (app *appInternal) Run() (exitCode int) {
 	return 0
 }
 
-var lock = new(sync.Mutex)
-var constructors []any
+var (
+	lock         = new(sync.Mutex)
+	constructors []any
+)
 
 func RegisterComponents(componentConstructors ...any) {
 	lock.Lock()

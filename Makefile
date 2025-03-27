@@ -16,7 +16,8 @@ init:
 
 ## make fmt: Formats source code
 fmt:
-	gorgeous -local github.com/zunkk -mi
+	gofumpt -l -w .
+	goimports -local github.com/zunkk -w .
 
 ## make test: Run go unittest
 test:

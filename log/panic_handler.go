@@ -10,7 +10,7 @@ var stdErrFile *os.File
 
 func redirectPanic(errLogFilePath string) error {
 	var err error
-	stdErrFile, err = os.OpenFile(errLogFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	stdErrFile, err = os.OpenFile(errLogFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		return err
 	}

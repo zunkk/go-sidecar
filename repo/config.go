@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/spf13/viper"
 
@@ -53,7 +53,7 @@ func WriteConfig[T CustomConfig](repoPath string, config T) error {
 		return err
 	}
 
-	if err := os.WriteFile(filepath.Join(repoPath, cfgFileName), []byte(raw), 0755); err != nil {
+	if err := os.WriteFile(filepath.Join(repoPath, cfgFileName), []byte(raw), 0o755); err != nil {
 		return err
 	}
 	return nil
