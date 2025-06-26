@@ -34,6 +34,13 @@ func (e *CustomError) Wrap(errMsg string) *CustomError {
 	}
 }
 
+func (e *CustomError) Wrapf(format string, a ...any) *CustomError {
+	return &CustomError{
+		msg:  e.msg + ": " + fmt.Sprintf(format, a...),
+		code: e.code,
+	}
+}
+
 func DecodeError(customErr error) uint32 {
 	rootErr := errors.Cause(customErr)
 	var ce *CustomError

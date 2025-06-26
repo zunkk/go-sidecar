@@ -12,14 +12,14 @@ type ReqCtx struct {
 	Ctx                    context.Context
 	Logger                 *slog.Logger
 	RequestID              int64
-	Caller                 string
+	Caller                 any
 	Lock                   *sync.RWMutex
 	values                 map[any]any
 	customLogFields        map[string]any
 	customLogFieldsOnError map[string]any
 }
 
-func NewReqCtx(ctx context.Context, logger *slog.Logger, requestID int64, caller string) *ReqCtx {
+func NewReqCtx(ctx context.Context, logger *slog.Logger, requestID int64, caller any) *ReqCtx {
 	return &ReqCtx{
 		Ctx:                    ctx,
 		Logger:                 logger.With("req_id", requestID),
@@ -30,6 +30,14 @@ func NewReqCtx(ctx context.Context, logger *slog.Logger, requestID int64, caller
 		customLogFields:        map[string]any{},
 		customLogFieldsOnError: map[string]any{},
 	}
+}
+
+func (ctx *ReqCtx) Int64Caller() int64 {
+	return ctx.Caller.(int64)
+}
+
+func (ctx *ReqCtx) StringCaller() string {
+	return ctx.Caller.(string)
 }
 
 func (ctx *ReqCtx) AddCustomLogField(key string, value any) {
