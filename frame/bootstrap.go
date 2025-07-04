@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"testing"
 	"time"
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/fx"
 
 	glog "github.com/zunkk/go-sidecar/log"
@@ -118,4 +120,40 @@ func BuildApp(name string, bgCtx context.Context, uuidNodeIndex uint16, version 
 		wg:     wg,
 		App:    app,
 	}, nil
+}
+
+func BuildTestComponent(t testing.TB, supports []any, subComponentConstructors []any, fxInvokeFunc any) {
+	ctx, cancel := context.WithCancel(context.Background())
+	wg := new(sync.WaitGroup)
+	supports = append(supports, &BuildConfig{
+		Ctx:       ctx,
+		Wg:        wg,
+		Version:   "dev",
+		NodeIndex: 0,
+	})
+	subComponentConstructors = append(subComponentConstructors, NewSidecar)
+	app := fx.New(
+		fx.NopLogger,
+		fx.Supply(supports...),
+		fx.Provide(
+			subComponentConstructors...,
+		),
+		fx.Invoke(fxInvokeFunc),
+	)
+	if err := app.Err(); err != nil {
+		cancel()
+		require.Nil(t, errors.Wrap(err, "app setup error"))
+	}
+	a := &appInternal{
+		name:   "test",
+		ctx:    ctx,
+		cancel: cancel,
+		wg:     wg,
+		App:    app,
+	}
+	err := a.Start(ctx)
+	require.Nil(t, err)
+	t.Cleanup(func() {
+		_ = a.Stop(ctx)
+	})
 }
