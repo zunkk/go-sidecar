@@ -93,6 +93,7 @@ var globalLogrusLogger = logrus.New()
 var globalSlog = WithModule("")
 
 func init() {
+	globalLogrusLogger.SetLevel(logrus.DebugLevel)
 	globalLogrusLogger.SetFormatter(&Formatter{
 		FirstFieldsOrder: []string{"uri", "err_code", "err_msg", "err"},
 		LastFieldsOrder:  []string{"method", "ip", "http_code", "req_id", "time_cost", "caller"},
